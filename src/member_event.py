@@ -50,39 +50,9 @@ async def on_member_remove(
             )
     else:
         # Log an error if the channel cannot be found
-        print(f"Could not find the leave channel with ID:", leave_channel_id)
+        print(f"Could not find the leave channel with ID: {leave_channel_id}")
 
 
-async def on_guild_update(
-    before: discord.Guild,
-    after: discord.Guild,
-    boost_channel_id: int,
-):
-    # Validate the channel ID
-    if not isinstance(boost_channel_id, int) or boost_channel_id <= 0:
-        print("Invalid boost channel ID:", boost_channel_id)
-        return
-
-    # Check if the number of premium subscriptions (boosts) has changed
-    if before.premium_subscription_count != after.premium_subscription_count:
-        if boost_channel_id:
-            # Get the channel where boost notifications will be sent
-            channel = after.get_channel(boost_channel_id)
-            if channel:
-                # Calculate the number of boosts added
-                boosts_added = (
-                    after.premium_subscription_count - before.premium_subscription_count
-                )
-                if boosts_added > 0:
-                    try:
-                        # Send a message to the channel when the server is boosted
-                        await channel.send(
-                            f"{after.mention} | `{after.name}` | `{after.id}` has boosted the server!"
-                        )
-                    except discord.Forbidden:
-                        print(
-                            f"Cannot send message to the boost channel: {boost_channel_id}. Check permissions."
-                        )
-            else:
-                # Log an error if the channel cannot be found
-                print(f"Could not find the boost channel with ID: {boost_channel_id}")
+# Note: Ensure your bot has 'Send Messages' and 'Embed Links' permissions
+# in the specified channels (join_channel_id and leave_channel_id).
+# You also need to pass these channel IDs to the functions when calling them in your bot's events.
